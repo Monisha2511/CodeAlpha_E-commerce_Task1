@@ -32,7 +32,8 @@
     </div>
 
     <script>
-      document.getElementById("login-form").addEventListener("submit", function(e) {
+  <script>
+document.getElementById("login-form").addEventListener("submit", function(e) {
     e.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -43,20 +44,21 @@
         return;
     }
 
-    // Get users stored in localStorage
+    // Get users from localStorage
     const users = JSON.parse(localStorage.getItem("users")) || [];
 
-    // Check if user exists
+    // Find user
     const user = users.find(u => u.email === email && u.password === password);
 
     if (user) {
-        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("loggedInUser", email);
         alert("Login successful!");
         window.location.href = "index.html";
     } else {
         alert("Invalid email or password.");
     }
 });
+</script>
 
     </script>
 </body>
