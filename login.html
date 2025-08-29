@@ -32,7 +32,12 @@
     </div>
 
     <script>
-        // If already logged in, redirect to homepage
+        // Example static users (can be extended or synced with signup)
+        const users = [
+            { email: "admin@example.com", password: "admin123" },
+            { email: "user@example.com", password: "user123" }
+        ];
+
         if (localStorage.getItem("loggedIn")) {
             window.location.href = "index.html";
         }
@@ -48,35 +53,20 @@
                 return;
             }
 
-            fetch("http://localhost:8081/api/users/login", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        email,
-                        password
-                    })
-                })
-                .then(res => {
-                    if (res.ok) return res.text();
-                    throw new Error("Invalid login");
-                })
-                .then(data => {
-                    if (data === "Login successful") {
-                        localStorage.setItem("loggedIn", "true");
-                        alert("Login successful!");
-                        window.location.href = "index.html";
-                    } else {
-                        alert("Login failed: " + data);
-                    }
-                })
-                .catch(err => {
-                    alert("Login error: " + err.message);
-                });
+            // Check against static users
+            const foundUser = users.find(user => user.email === email && user.password === password);
+
+            if (foundUser) {
+                localStorage.setItem("loggedIn", "true");
+                localStorage.setItem("userEmail", email);
+                alert("Login successful!");
+                window.location.href = "index.html";
+            } else {
+                alert("Invalid email or password!");
+            }
         });
 
-        // Logout button (shouldn’t show on this page unless user somehow is logged in)
+        // Logout handling
         document.addEventListener("DOMContentLoaded", () => {
             const isLoggedIn = localStorage.getItem("loggedIn");
             if (isLoggedIn) {
@@ -87,6 +77,7 @@
 
             document.getElementById("logout-btn").addEventListener("click", () => {
                 localStorage.removeItem("loggedIn");
+                localStorage.removeItem("userEmail");
                 window.location.href = "login.html";
             });
         });
